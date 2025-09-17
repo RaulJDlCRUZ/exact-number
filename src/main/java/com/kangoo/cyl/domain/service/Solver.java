@@ -1,36 +1,59 @@
 package com.kangoo.cyl.domain.service;
 
+import com.kangoo.cyl.CifrasYLetrasApplication;
+
 public class Solver {
 
+
     public boolean approximation(int currentTotal, int targetNum) {
-        // Implement your approximation logic here
-        throw new UnsupportedOperationException("Unimplemented method 'approximation'");
+        Math.abs(currentTotal - targetNum);
+        return Math.abs(currentTotal - targetNum) <= 10;
     }
 
-    public void showSolution(int targetNum, int[] temp, int tempIndex) {
-        // Implement your solution display logic here
-        throw new UnsupportedOperationException("Unimplemented method 'showSolution'");
-    }
-
-    public int operation() {
-        // Implement your operation logic here
-        throw new UnsupportedOperationException("Unimplemented method 'operation'");
-    }
-
-    public void rocketscience(int[] numToUse, int targetNum, boolean[] used, int[] temp, int tempIndex,
-            int currentTotal) {
+    public boolean rocketscience(int[] numToUse, int targetNum, boolean[] used, int[] temp, int tempIndex, int currentTotal, char[] operation, int[] totals, int opIndex) {
         if (currentTotal == targetNum || approximation(currentTotal, targetNum)) {
-            showSolution(targetNum, temp, tempIndex);
+            CifrasYLetrasApplication.showSolution(targetNum, temp, tempIndex, operation, totals, opIndex);
+            return true;
         } else {
             for (int i = 0; i < numToUse.length; i++) {
-                // BLANK SPACE
                 if (!used[i]) {
                     used[i] = true;
                     temp[tempIndex] = numToUse[i];
-                    rocketscience(numToUse, targetNum, used, temp, tempIndex + 1, operation(/* BLANK SPACE */));
+                    if (tempIndex == 0) {
+                        totals[0] = temp[0];
+                        rocketscience(numToUse, targetNum, used, temp, tempIndex + 1, numToUse[i], operation, totals, opIndex);
+                    } else {
+                        // Addition
+                        operation[opIndex] = '+';
+                        totals[opIndex + 1] = currentTotal + numToUse[i];
+                        if(rocketscience(numToUse, targetNum, used, temp, tempIndex + 1, currentTotal + numToUse[i], operation, totals, opIndex + 1)) {
+                            return true;
+                        }
+                        // Subtraction
+                        operation[opIndex] = '-';
+                        totals[opIndex + 1] = currentTotal - numToUse[i];
+                        if(rocketscience(numToUse, targetNum, used, temp, tempIndex + 1, currentTotal - numToUse[i], operation, totals, opIndex + 1)) {
+                            return true;
+                        }
+                        // Multiplication
+                        operation[opIndex] = '*';
+                        totals[opIndex + 1] = currentTotal * numToUse[i];
+                        if(rocketscience(numToUse, targetNum, used, temp, tempIndex + 1, currentTotal * numToUse[i], operation, totals, opIndex + 1)) {
+                            return true;
+                        }
+                        // Division
+                        if (numToUse[i] != 0 && currentTotal % numToUse[i] == 0) {
+                            operation[opIndex] = '/';
+                            totals[opIndex + 1] = currentTotal / numToUse[i];
+                            if(rocketscience(numToUse, targetNum, used, temp, tempIndex + 1, currentTotal / numToUse[i], operation, totals, opIndex + 1)) {
+                                return true;
+                            }
+                        }
+                    }
                     used[i] = false;
                 }
             }
         }
+        return false;
     }
 }

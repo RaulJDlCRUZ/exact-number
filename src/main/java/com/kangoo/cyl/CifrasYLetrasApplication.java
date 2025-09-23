@@ -50,8 +50,10 @@ public class CifrasYLetrasApplication {
 		int[] totals = new int[temp.length];
 
 		// Call the backtracking method with indexes and current total initialized to 0
-		// solver.rocketscience(numToUse, targetNum, used, temp, 0, 0, operation,
-		// 		totals, 0);
+		solver.rocketscience(numToUse, targetNum, used, temp, 0, 0, operation,
+				totals, 0, false);
+
+		System.exit(0);
 
 		// Call the RocketScience solver
 		Integer[] numToUseBoxed = new Integer[numToUse.length];

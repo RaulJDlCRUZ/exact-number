@@ -4,77 +4,102 @@ import com.kangoo.cyl.CifrasYLetrasApplication;
 
 public class Solver {
 
-    // This method checks if the current total is within 10 of the target number,
-    // which could be a great approximation
+    private int bestApprox = Integer.MAX_VALUE;
+    private int[] bestTemp;
+    private char[] bestOperation;
+    private int[] bestTotals;
+    private int bestTempIndex = 0;
+    private int bestOpIndex = 0;
+
     public boolean approximation(int currentTotal, int targetNum) {
-        Math.abs(currentTotal - targetNum);
         return Math.abs(currentTotal - targetNum) <= 10;
     }
 
-    // Classic backtracking algorithm to find the solution
+    // Added stopOnFirstExact parameter
     public boolean rocketscience(int[] numToUse, int targetNum, boolean[] used, int[] temp, int tempIndex,
-            int currentTotal, char[] operation, int[] totals, int opIndex) {
+            int currentTotal, char[] operation, int[] totals, int opIndex, boolean stopOnFirstExact) {
 
-        // The base case: if the current total matches the target number or is a great
-        // approximation, call showSolution on "main" to print the solution and return
-        // true
-        if (currentTotal == targetNum || approximation(currentTotal, targetNum)) {
+        int diff = Math.abs(currentTotal - targetNum);
+        if (diff < Math.abs(bestApprox - targetNum)) {
+            bestApprox = currentTotal;
+            bestTemp = temp.clone();
+            bestOperation = operation.clone();
+            bestTotals = totals.clone();
+            bestTempIndex = tempIndex;
+            bestOpIndex = opIndex;
+        }
+
+        // Exact match found
+        if (currentTotal == targetNum) {
             CifrasYLetrasApplication.showSolution(targetNum, temp, tempIndex, operation, totals, opIndex);
-            return true;
-        } else {
+            return stopOnFirstExact; // If true, stop recursion; if false, keep searching
+        }
 
-            // Iterate through the array of numbers to use
-            for (int i = 0; i < numToUse.length; i++) {
+        boolean found = false;
+        for (int i = 0; i < numToUse.length; i++) {
+            if (!used[i]) {
+                used[i] = true;
+                temp[tempIndex] = numToUse[i];
 
-                // If the number has not been used yet, mark it as used and add it to the
-                // temporary array
-                if (!used[i]) {
-                    used[i] = true;
-                    temp[tempIndex] = numToUse[i];
+                if (tempIndex == 0) {
+                    totals[0] = temp[0];
+                    found = rocketscience(numToUse, targetNum, used, temp, tempIndex + 1, numToUse[i], operation,
+                            totals, opIndex, stopOnFirstExact);
+                } else {
+                    // Addition
+                    operation[opIndex] = '+';
+                    totals[opIndex + 1] = currentTotal + numToUse[i];
+                    found = rocketscience(numToUse, targetNum, used, temp, tempIndex + 1, currentTotal + numToUse[i],
+                            operation, totals, opIndex + 1, stopOnFirstExact);
+                    if (stopOnFirstExact && found) {
+                        used[i] = false;
+                        break;
+                    }
 
-                    // If it's the first number, initialize the current total with it
-                    if (tempIndex == 0) {
-                        totals[0] = temp[0];
-                        rocketscience(numToUse, targetNum, used, temp, tempIndex + 1, numToUse[i], operation, totals,
-                                opIndex);
-                    } else {
+                    // Subtraction
+                    operation[opIndex] = '-';
+                    totals[opIndex + 1] = currentTotal - numToUse[i];
+                    found = rocketscience(numToUse, targetNum, used, temp, tempIndex + 1, currentTotal - numToUse[i],
+                            operation, totals, opIndex + 1, stopOnFirstExact);
+                    if (stopOnFirstExact && found) {
+                        used[i] = false;
+                        break;
+                    }
 
-                        // Try all the operations and find the best one
-                        // Addition
-                        operation[opIndex] = '+';
-                        totals[opIndex + 1] = currentTotal + numToUse[i];
-                        if (rocketscience(numToUse, targetNum, used, temp, tempIndex + 1, currentTotal + numToUse[i],
-                                operation, totals, opIndex + 1)) {
-                            return true;
-                        }
-                        // Subtraction
-                        operation[opIndex] = '-';
-                        totals[opIndex + 1] = currentTotal - numToUse[i];
-                        if (rocketscience(numToUse, targetNum, used, temp, tempIndex + 1, currentTotal - numToUse[i],
-                                operation, totals, opIndex + 1)) {
-                            return true;
-                        }
-                        // Multiplication
-                        operation[opIndex] = '*';
-                        totals[opIndex + 1] = currentTotal * numToUse[i];
-                        if (rocketscience(numToUse, targetNum, used, temp, tempIndex + 1, currentTotal * numToUse[i],
-                                operation, totals, opIndex + 1)) {
-                            return true;
-                        }
-                        // Division
-                        if (numToUse[i] != 0 && currentTotal % numToUse[i] == 0) {
-                            operation[opIndex] = '/';
-                            totals[opIndex + 1] = currentTotal / numToUse[i];
-                            if (rocketscience(numToUse, targetNum, used, temp, tempIndex + 1,
-                                    currentTotal / numToUse[i], operation, totals, opIndex + 1)) {
-                                return true;
-                            }
+                    // Multiplication
+                    operation[opIndex] = '*';
+                    totals[opIndex + 1] = currentTotal * numToUse[i];
+                    found = rocketscience(numToUse, targetNum, used, temp, tempIndex + 1, currentTotal * numToUse[i],
+                            operation, totals, opIndex + 1, stopOnFirstExact);
+                    if (stopOnFirstExact && found) {
+                        used[i] = false;
+                        break;
+                    }
+
+                    // Division
+                    if (numToUse[i] != 0 && currentTotal % numToUse[i] == 0) {
+                        operation[opIndex] = '/';
+                        totals[opIndex + 1] = currentTotal / numToUse[i];
+                        found = rocketscience(numToUse, targetNum, used, temp, tempIndex + 1,
+                                currentTotal / numToUse[i], operation, totals, opIndex + 1, stopOnFirstExact);
+                        if (stopOnFirstExact && found) {
+                            used[i] = false;
+                            break;
                         }
                     }
-                    used[i] = false;
                 }
+                used[i] = false;
+                if (stopOnFirstExact && found)
+                    break;
             }
         }
-        return false;
+
+        // Show best approximation if no exact match was found and this is the top-level call
+        if (tempIndex == 0 && !found && bestTemp != null) {
+            CifrasYLetrasApplication.showSolution(targetNum, bestTemp, bestTempIndex, bestOperation, bestTotals,
+                    bestOpIndex);
+        }
+
+        return found;
     }
 }

@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.kangoo</groupId>
 	<artifactId>cyl</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.5-SNAPSHOT</version>
 	<name>cifras-y-letras</name>
 	<description>Exact number simulator for Java</description>
 	<url/>

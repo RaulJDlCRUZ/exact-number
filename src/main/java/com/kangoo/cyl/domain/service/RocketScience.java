@@ -1,15 +1,18 @@
 package com.kangoo.cyl.domain.service;
 
-import java.util.List;
-
 import com.kangoo.cyl.domain.entity.Operation;
-import com.kangoo.cyl.domain.vo.Operator;
 import com.kangoo.cyl.domain.entity.OptimalSolution;
 import com.kangoo.cyl.domain.entity.State;
+import com.kangoo.cyl.domain.vo.Operator;
+import java.util.List;
 
 public class RocketScience {
 
-    private boolean isViable(State state, Integer target, OptimalSolution bestPath) {
+    private boolean isViable(
+        State state,
+        Integer target,
+        OptimalSolution bestPath
+    ) {
         if (bestPath.getIsExact()) {
             return false; // Prune if exact solution already found
         }
@@ -22,7 +25,7 @@ public class RocketScience {
                 return false; // No numbers left, can't improve
             case 1:
                 // If we have only one number, check if distance is better
-                Integer currentResult = state.getAvailableNumbers().getFirst();
+                Integer currentResult = state.getAvailableNumbers().get(0);
                 int currentDistance = Math.abs(currentResult - target);
                 return currentDistance < bestPath.getMinimalDistance();
             default:
@@ -31,7 +34,10 @@ public class RocketScience {
         }
     }
 
-    private boolean isTargetInInitialNumbers(Integer[] numbers, Integer target) {
+    private boolean isTargetInInitialNumbers(
+        Integer[] numbers,
+        Integer target
+    ) {
         for (Integer number : numbers) {
             if (number.equals(target)) {
                 return true;
@@ -41,7 +47,13 @@ public class RocketScience {
     }
 
     public OptimalSolution solve(Integer[] numbers, Integer target) {
-        OptimalSolution bestPath = new OptimalSolution(Integer.MAX_VALUE, 0, null, null, false);
+        OptimalSolution bestPath = new OptimalSolution(
+            Integer.MAX_VALUE,
+            0,
+            null,
+            null,
+            false
+        );
 
         if (isTargetInInitialNumbers(numbers, target)) {
             bestPath.setMinimalDistance(0);
@@ -52,16 +64,20 @@ public class RocketScience {
             return bestPath;
         }
 
-        // Proceed with backtracking algorithm (not implemented here)
-        State initialState = new State().createInitState(List.of(numbers));
+        // Proceed with backtracking algorithm
+        State initialState = State.createInitState(List.of(numbers));
         rocketScience(initialState, target, bestPath);
         return bestPath;
     }
 
-    public void rocketScience(State state, Integer target, OptimalSolution bestPath) {
+    public void rocketScience(
+        State state,
+        Integer target,
+        OptimalSolution bestPath
+    ) {
         /* Base case: Check if we have only one number (terminal solution) */
         if (state.getAvailableNumbers().size() == 1) {
-            Integer result = state.getAvailableNumbers().getFirst();
+            Integer result = state.getAvailableNumbers().get(0);
             int distance = Math.abs(result - target);
 
             /* Update best path if we found a better solution */
@@ -97,11 +113,11 @@ public class RocketScience {
                 for (Operator op : operations) {
                     Operation operation1 = new Operation(n1, n2, op);
                     if (operation1.isValid()) {
-                        State newState = new State().createStateFrom(state);
-                        newState = newState.removeNumbers(n1, n2, newState);
+                        State newState = State.createStateFrom(state);
+                        newState.removeNumbersByValues(n1, n2);
                         Integer result = operation1.computeResult();
-                        newState = newState.addNumber(result, newState);
-                        newState = newState.addOperation(operation1, newState);
+                        newState.addNumber(result);
+                        newState.addOperation(operation1);
 
                         // Check viability before continuing
                         if (isViable(newState, target, bestPath)) {
@@ -119,11 +135,11 @@ public class RocketScience {
                     if (op == Operator.SUBTRACTION || op == Operator.DIVISION) {
                         Operation operation2 = new Operation(n2, n1, op);
                         if (operation2.isValid()) {
-                            State newState = new State().createStateFrom(state);
-                            newState = newState.removeNumbers(n1, n2, newState);
+                            State newState = State.createStateFrom(state);
+                            newState.removeNumbersByValues(n1, n2);
                             Integer result = operation2.computeResult();
-                            newState = newState.addNumber(result, newState);
-                            newState = newState.addOperation(operation2, newState);
+                            newState.addNumber(result);
+                            newState.addOperation(operation2);
 
                             if (isViable(newState, target, bestPath)) {
                                 rocketScience(newState, target, bestPath);

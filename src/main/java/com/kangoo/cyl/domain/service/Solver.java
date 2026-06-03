@@ -19,8 +19,10 @@ public class Solver {
     public boolean rocketscience(int[] numToUse, int targetNum, boolean[] used, int[] temp, int tempIndex,
             int currentTotal, char[] operation, int[] totals, int opIndex, boolean stopOnFirstExact) {
 
-        int diff = Math.abs(currentTotal - targetNum);
-        if (diff < Math.abs(bestApprox - targetNum)) {
+        int currentDiff = Math.abs(currentTotal - targetNum);
+        int bestDiff = Math.abs(bestApprox - targetNum);
+
+        if (currentDiff < bestDiff) {
             bestApprox = currentTotal;
             bestTemp = temp.clone();
             bestOperation = operation.clone();
@@ -94,7 +96,8 @@ public class Solver {
             }
         }
 
-        // Show best approximation if no exact match was found and this is the top-level call
+        // Show best approximation if no exact match was found and this is the top-level
+        // call
         if (tempIndex == 0 && !found && bestTemp != null) {
             CifrasYLetrasApplication.showSolution(targetNum, bestTemp, bestTempIndex, bestOperation, bestTotals,
                     bestOpIndex);

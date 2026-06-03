@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.kangoo.cyl.domain.entity.OptimalSolution;
 import com.kangoo.cyl.domain.service.Rand;
 import com.kangoo.cyl.domain.service.RocketScience;
+import com.kangoo.cyl.domain.service.OptimizedSolver;
 import com.kangoo.cyl.domain.service.Solver;
 
 @SpringBootApplication
@@ -20,6 +21,7 @@ public class CifrasYLetrasApplication {
 		Rand rand = new Rand();
 		Solver solver = new Solver();
 		RocketScience rocketScience = new RocketScience();
+		OptimizedSolver rocketScienceII = new OptimizedSolver();
 
 		if (args.length == 7) {
 			// If 7 arguments are provided, parse them as integers
@@ -50,10 +52,10 @@ public class CifrasYLetrasApplication {
 		int[] totals = new int[temp.length];
 
 		// Call the backtracking method with indexes and current total initialized to 0
-		solver.rocketscience(numToUse, targetNum, used, temp, 0, 0, operation,
-				totals, 0, false);
+		// solver.rocketscience(numToUse, targetNum, used, temp, 0, 0, operation,
+		// 		totals, 0, false);
 
-		System.exit(0);
+		// System.exit(0);
 
 		// Call the RocketScience solver
 		Integer[] numToUseBoxed = new Integer[numToUse.length];
@@ -62,7 +64,7 @@ public class CifrasYLetrasApplication {
 		}
 		OptimalSolution solution = rocketScience.solve(numToUseBoxed, targetNum);
 		if (solution.getOptimalSolution() != null) {
-			System.out.println("Best solution found with distance " + solution.getMinimalDistance() + " and "
+			System.out.println("[1] Best solution found with distance " + solution.getMinimalDistance() + " and "
 					+ solution.getOperationsNeeded() + " operations:");
 			solution.getOptimalSolution().forEach(op -> {
 				System.out.println(op.toString());
@@ -70,6 +72,18 @@ public class CifrasYLetrasApplication {
 		} else {
 			System.out.println("No solution found.");
 		}
+
+		OptimalSolution solution2 = rocketScienceII.solve(numToUseBoxed, targetNum);
+		if (solution2.getOptimalSolution() != null) {
+			System.out.println("[2] Best solution found with distance " + solution2.getMinimalDistance() + " and "
+					+ solution2.getOperationsNeeded() + " operations:");
+			solution2.getOptimalSolution().forEach(op -> {
+				System.out.println(op.toString());
+			});
+		} else {
+			System.out.println("No solution found.");
+		}
+
 		System.exit(0);
 	}
 

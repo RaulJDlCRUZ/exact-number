@@ -1,27 +1,31 @@
 package com.kangoo.cyl;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
-import com.kangoo.cyl.domain.entity.OptimalSolution;
+import com.kangoo.cyl.application.CifrasYLetrasService;
+import com.kangoo.cyl.domain.repository.SolutionRepository;
 import com.kangoo.cyl.domain.service.Rand;
-import com.kangoo.cyl.domain.service.RocketScience;
-import com.kangoo.cyl.domain.service.OptimizedSolver;
-import com.kangoo.cyl.domain.service.Solver;
+import com.kangoo.cyl.infrastructure.inmemory.InMemorySolutionRepository;
 
 @SpringBootApplication
 public class CifrasYLetrasApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CifrasYLetrasApplication.class, args);
+		SpringApplication app = new SpringApplication(CifrasYLetrasApplication.class);
+		app.setWebApplicationType(WebApplicationType.NONE);
+		ConfigurableApplicationContext context = app.run(args);
+		// SpringApplication.run(CifrasYLetrasApplication.class, args);
+
+		SolutionRepository repo = new InMemorySolutionRepository(); // PARA EJECUCION DESDE CLI USO INMEMORY
+		CifrasYLetrasService service = new CifrasYLetrasService(repo);
 
 		int[] numToUse = new int[6];
 		int targetNum;
 
 		Rand rand = new Rand();
-		Solver solver = new Solver();
-		RocketScience rocketScience = new RocketScience();
-		OptimizedSolver rocketScienceII = new OptimizedSolver();
 
 		if (args.length == 7) {
 			// If 7 arguments are provided, parse them as integers
@@ -44,47 +48,13 @@ public class CifrasYLetrasApplication {
 		}
 		System.out.println();
 
-		// Create the arrays which will be used to store the used numbers, temporary
-		// numbers, operations and totals
-		boolean[] used = new boolean[numToUse.length];
-		int[] temp = new int[numToUse.length];
-		char[] operation = new char[numToUse.length - 1];
-		int[] totals = new int[temp.length];
-
-		// Call the backtracking method with indexes and current total initialized to 0
-		// solver.rocketscience(numToUse, targetNum, used, temp, 0, 0, operation,
-		// 		totals, 0, false);
-
-		// System.exit(0);
-
 		// Call the RocketScience solver
 		Integer[] numToUseBoxed = new Integer[numToUse.length];
 		for (int i = 0; i < numToUse.length; i++) {
 			numToUseBoxed[i] = numToUse[i];
 		}
-		OptimalSolution solution = rocketScience.solve(numToUseBoxed, targetNum);
-		if (solution.getOptimalSolution() != null) {
-			System.out.println("[1] Best solution found with distance " + solution.getMinimalDistance() + " and "
-					+ solution.getOperationsNeeded() + " operations:");
-			solution.getOptimalSolution().forEach(op -> {
-				System.out.println(op.toString());
-			});
-		} else {
-			System.out.println("No solution found.");
-		}
-
-		OptimalSolution solution2 = rocketScienceII.solve(numToUseBoxed, targetNum);
-		if (solution2.getOptimalSolution() != null) {
-			System.out.println("[2] Best solution found with distance " + solution2.getMinimalDistance() + " and "
-					+ solution2.getOperationsNeeded() + " operations:");
-			solution2.getOptimalSolution().forEach(op -> {
-				System.out.println(op.toString());
-			});
-		} else {
-			System.out.println("No solution found.");
-		}
-
-		System.exit(0);
+		service.solveA(numToUseBoxed, targetNum);
+		SpringApplication.exit(context);
 	}
 
 	public static void showSolution(int targetNum, int[] temp, int tempIndex, char[] operation, int[] totals,

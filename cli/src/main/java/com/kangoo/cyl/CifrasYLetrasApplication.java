@@ -57,14 +57,4 @@ public class CifrasYLetrasApplication {
 		SpringApplication.exit(context);
 	}
 
-	public static void showSolution(int targetNum, int[] temp, int tempIndex, char[] operation, int[] totals,
-			int opIndex) {
-		System.out.println("Solution found:");
-
-		// Print the operations performed to reach the target number
-		for (int i = 0; i < opIndex; i++) {
-			System.out.println(totals[i] + " " + operation[i] + " " + temp[i + 1] + " = " + totals[i + 1]);
-		}
-	}
-
 }

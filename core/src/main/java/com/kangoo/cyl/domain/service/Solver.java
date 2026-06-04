@@ -1,6 +1,6 @@
 package com.kangoo.cyl.domain.service;
 
-import com.kangoo.cyl.CifrasYLetrasApplication;
+import com.kangoo.cyl.domain.service.SolutionPrinter;
 
 public class Solver {
 
@@ -33,7 +33,7 @@ public class Solver {
 
         // Exact match found
         if (currentTotal == targetNum) {
-            CifrasYLetrasApplication.showSolution(targetNum, temp, tempIndex, operation, totals, opIndex);
+            SolutionPrinter.showSolution(targetNum, temp, tempIndex, operation, totals, opIndex);
             return stopOnFirstExact; // If true, stop recursion; if false, keep searching
         }
 
@@ -99,8 +99,7 @@ public class Solver {
         // Show best approximation if no exact match was found and this is the top-level
         // call
         if (tempIndex == 0 && !found && bestTemp != null) {
-            CifrasYLetrasApplication.showSolution(targetNum, bestTemp, bestTempIndex, bestOperation, bestTotals,
-                    bestOpIndex);
+            SolutionPrinter.showSolution(targetNum, bestTemp, bestTempIndex, bestOperation, bestTotals, bestOpIndex);
         }
 
         return found;

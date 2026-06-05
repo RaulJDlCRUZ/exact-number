@@ -6,7 +6,7 @@ import com.kangoo.cyl.domain.repository.SolutionRepository;
 public class InMemorySolutionRepository implements SolutionRepository {
     
     @Override
-    public void save(OptimalSolution solution) {
+    public void save(Integer[] numbers, Integer target, OptimalSolution solution) {
         if (solution.getOptimalSolution() == null) {
             System.err.println("[!!] No solution found.");
         } else {

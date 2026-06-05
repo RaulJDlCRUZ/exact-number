@@ -9,7 +9,8 @@ public class OptimalSolution {
     private Integer bestResult;
     private Boolean isExact;
 
-    public OptimalSolution(Integer minimalDistance, Integer operationsNeeded, List<Operation> optimalSolution, Integer bestResult,
+    public OptimalSolution(Integer minimalDistance, Integer operationsNeeded, List<Operation> optimalSolution,
+            Integer bestResult,
             Boolean isExact) {
         this.minimalDistance = minimalDistance;
         this.operationsNeeded = operationsNeeded;

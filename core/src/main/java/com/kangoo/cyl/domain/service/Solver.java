@@ -1,7 +1,5 @@
 package com.kangoo.cyl.domain.service;
 
-import com.kangoo.cyl.domain.service.SolutionPrinter;
-
 public class Solver {
 
     private int bestApprox = Integer.MAX_VALUE;

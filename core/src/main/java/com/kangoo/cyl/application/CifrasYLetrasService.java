@@ -20,7 +20,7 @@ public class CifrasYLetrasService {
 
     public OptimalSolution solveA(Integer[] numbers, Integer target) {
         OptimalSolution solution = solver.solve(numbers, target);
-        repository.save(solution);
+        repository.save(numbers, target, solution);
         return solution;
     }
 

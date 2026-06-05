@@ -17,7 +17,12 @@ public class DynamoSolutionRepository implements SolutionRepository {
 
     private final DynamoDbClient client = DynamoDbClient.create();
 
-    private final String tableName = "CalculationResults";
+    // Se propone configurarla como "CalculationResults"
+    private final String tableName =
+    java.util.Objects.requireNonNull(
+        System.getenv("TABLE_NAME"),
+        "TABLE_NAME environment variable is required"
+    );
 
     @Override
     public void save(Integer[] numbers, Integer target, OptimalSolution solution) {

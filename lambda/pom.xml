@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.kangoo</groupId>
         <artifactId>cyl-parent</artifactId>
-        <version>0.0.7-SNAPSHOT</version>
+        <version>0.0.8-SNAPSHOT</version>
     </parent>
 
     <artifactId>cyl-lambda</artifactId>
@@ -14,7 +14,7 @@
         <dependency>
             <groupId>com.kangoo</groupId>
             <artifactId>cyl-core</artifactId>
-            <version>0.0.7-SNAPSHOT</version>
+            <version>0.0.8-SNAPSHOT</version>
         </dependency>
 
         <!-- Sin scope provided: debe ir en el JAR -->
@@ -28,6 +28,13 @@
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>dynamodb</artifactId>
             <version>2.25.60</version>
+        </dependency>
+
+        <!-- To use ObjectMapper for API -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.0</version>
         </dependency>
     </dependencies>
 
